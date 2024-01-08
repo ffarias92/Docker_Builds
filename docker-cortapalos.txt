@@ -1,0 +1,127 @@
+### Comandos Basicos : ### 
+
+
+
+### Mostrar imagenes descargadas en el repositorio local : ###
+
+docker images 
+
+### Descargar imagenes en el repositorio local (ejemplo node) : ### 
+
+docker pull "nombreimagen"
+
+### Borrar imagenes en el repositorio local (ejemplo node): ###
+
+docker image rm "nombreimagen"
+
+### Borrar contenedor (debe estar en stop) ###
+
+docker rm “nombreoidcontenedor” 
+
+### Crear un contenedor a partir de una imagen local ###
+
+docker create "nombrecontenedor"
+
+### Ejecutar contenedor a partir del nombre/id ### 
+
+docker start "nombrecontenedor"
+
+### crear red en docker ###
+
+docker create network "nombrered"
+
+### enlistar redes ###
+
+docker network ls
+
+### agregar contenedor a una red ya existente ###
+
+docker network connect [nombre_red] [nombre_contenedor]
+
+### Crear una imagen a partir de un Dockerfile: ###
+
+docker build -t [nombre_imagen] [ruta_directorio_Dockerfile]
+
+### etiquetar una imagen  (util para versionado) ###
+
+docker tag [ID_imagen] [nombre_imagen:etiqueta] 
+
+### Ver uso de recursos de los contenedores: ###
+
+docker stats
+
+### Ejecutar un contenedor y mapear volúmenes:  ###
+
+docker run -v [ruta_host]:[ruta_contenedor] [nombre_imagen]
+
+### eliminar un volumen  ###
+
+docker volume rm [nombre_volumen]
+
+### atachar un contenedor a un volumen ###
+
+docker run -d --name mi_contenedor -v /ruta/en/tu/host:/ruta/en/el/contenedor nombre_imagen
+
+
+
+### Ejemplo DockerFile ###
+
+# Usamos la imagen base de Nginx
+FROM nginx:alpine
+
+# Copiamos nuestro archivo de configuración personalizado al contenedor
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Exponemos el puerto 80 para que pueda ser accesible
+EXPOSE 80
+
+# Comando por defecto para iniciar Nginx cuando el contenedor se ejecute
+CMD ["nginx", "-g", "daemon off;"]
+
+
+
+
+
+
+### Ejemplo DockerCompose ###
+
+version: '3.8'  # Versión de docker-compose
+
+services:
+  web_app:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - db_server
+
+  db_server:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql123
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
+
+
+
+
+
+### Ejecutar comandos especificos ###
+
+docker create -p27017:27017 --name monguito --network mired -e MONGO_INITDB_ROOT_USERNAME=nico -e MONGO_INITDB_ROOT_PASSWORD=password mongo:4.4.6
+
+## docker create = crear contenedor
+## -p27017:27017 = seleccionar puerto de entrada y salida
+## --name = elegir un nombre
+## --network = configurar una red
+## -e = variables de entorno
+
